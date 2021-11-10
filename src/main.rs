@@ -13,12 +13,6 @@ struct Options {
     output: Option<PathBuf>,
 }
 
-trait Input: BufRead + Sized {}
-impl<T: BufRead + Sized> Input for T {}
-
-// impl Input for BufReader<File> {}/
-// impl Input for BufReader<File> {}
-
 impl Options {
     pub fn parse() -> std::io::Result<Options> {
         let mut parser = ArgParser::new().helptext("Usage: runiq...").version("1.0");
@@ -52,14 +46,6 @@ impl Options {
         let reader = BufReader::with_capacity(4 * 1024, file);
 
         Ok(Box::new(reader))
-
-        // if let Some(ref path) = self.input {
-        //     let file = File::open(path)?;
-        //     let reader = BufReader::new(file);
-        //     return Ok(Box::new(reader));
-        // } else {
-        //     return Ok(Box::new(BufReader::new(stdin())));
-        // }
     }
 
     pub fn open_output(&self) -> std::io::Result<io::BufWriter<File>> {
@@ -69,16 +55,8 @@ impl Options {
         };
 
         let buf_writer = BufWriter::with_capacity(64 * 1024, file);
-        Ok(buf_writer)
 
-        // if let Some(ref path) = self.output {
-        //     let file = File::open(path)?;
-        //     let reader = BufWriter::new(file);
-        //     return Ok(Box::new(reader));
-        // } else {
-        //     let file = unsafe { File::from_raw_fd(1) };
-        //     return Ok(Box::new(BufWriter::new(file)));
-        // }
+        Ok(buf_writer)
     }
 
     fn parse_path(raw_path: &str) -> Result<PathBuf, io::Error> {
